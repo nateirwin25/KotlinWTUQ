@@ -7,6 +7,12 @@ import org.junit.jupiter.api.Test
 
 class tests() {
 
+    fun runTests() {
+        testNumC()
+        testStringC()
+        testIdC()
+    }
+
     @Test
     fun testNumC() {
         val test1 = (NumC(0))

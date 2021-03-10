@@ -44,12 +44,12 @@ class TopLevelEnvironment {
             topenv.add(Symbol("+"),
                 PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() + b.get())} })
             topenv.add(Symbol("-"),
-                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() + b.get())} })
+                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() - b.get())} })
             // Need to verify divide by zero
             topenv.add(Symbol("/"),
-                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() + b.get())} })
+                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() / b.get())} })
             topenv.add(Symbol("*"),
-                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() + b.get())} })
+                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() * b.get())} })
 
             topenv.add(Symbol("true"), BoolV(true))
             topenv.add(Symbol("false"), BoolV(false))

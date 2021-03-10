@@ -33,7 +33,7 @@ class AppC(var func: ExprC, var args: List<ExprC>) : ExprC() {
                 evaluatedArgs.add(argument.interp(env))
 
             return interpretedFunc.op(evaluatedArgs)
-//            return NumV(0)
+
         } else {
             throw Exception("Not of CloV or PrimV type!")
         }

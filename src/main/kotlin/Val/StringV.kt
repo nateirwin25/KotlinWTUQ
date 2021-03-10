@@ -1,9 +1,9 @@
 package Val
 
-class StringV(var n: String) : Value() {
+class StringV(var str: String) : Value() {
 
     override fun serialize(): String {
-        return n
+        return str
     }
 
 }

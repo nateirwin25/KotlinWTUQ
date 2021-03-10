@@ -6,4 +6,8 @@ class NumV(var n: Int) : Value() {
         return n.toString();
     }
 
+    fun get() : Int{
+        return n
+    }
+
 }

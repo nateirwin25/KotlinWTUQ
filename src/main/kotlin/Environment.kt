@@ -23,8 +23,8 @@ class Environment(var env: ArrayList<Pair<Symbol, Value>> = ArrayList<Pair<Symbo
 
     fun extendEnv(s: Symbol, v: Value) : Environment {
         var temp = Environment(env)
-        temp.add(s, v);
-        return temp;
+        temp.add(s, v)
+        return temp
     }
 
 }

@@ -10,11 +10,14 @@ class TopLevelEnvironment {
 
     companion object {
 
-        fun verifyBinopArgs(args: List<Value>, op: (NumV, NumV) -> Value) : Value {
+        fun verifyBinopArgs(args: List<Value>, oper: Symbol, op: (NumV, NumV) -> Value) : Value {
             if(args.size == 2) {
                 val first = args.get(0)
                 val second = args.get(1)
                 if(first is NumV && second is NumV) {
+                    if(oper.get() == "/" && second.get() == 0) {
+                        throw Exception("Divide by zero error")
+                    }
                     return op(first, second)
                 }
             }
@@ -42,14 +45,14 @@ class TopLevelEnvironment {
 
 
             topenv.add(Symbol("+"),
-                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() + b.get())} })
+                PrimV { args: List<Value> -> verifyBinopArgs(args, Symbol("+")) { a: NumV, b: NumV -> NumV(a.get() + b.get())} })
             topenv.add(Symbol("-"),
-                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() - b.get())} })
+                PrimV { args: List<Value> -> verifyBinopArgs(args, Symbol("-")) { a: NumV, b: NumV -> NumV(a.get() - b.get())} })
             // Need to verify divide by zero
             topenv.add(Symbol("/"),
-                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() / b.get())} })
+                PrimV { args: List<Value> -> verifyBinopArgs(args, Symbol("/")) { a: NumV, b: NumV -> NumV(a.get() / b.get())} })
             topenv.add(Symbol("*"),
-                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> NumV(a.get() * b.get())} })
+                PrimV { args: List<Value> -> verifyBinopArgs(args, Symbol("*")) { a: NumV, b: NumV -> NumV(a.get() * b.get())} })
 
             topenv.add(Symbol("true"), BoolV(true))
             topenv.add(Symbol("false"), BoolV(false))
@@ -64,7 +67,7 @@ class TopLevelEnvironment {
             topenv.add(Symbol("equal?"), PrimV { args: List<Value> -> eq(args)})
 
             topenv.add(Symbol("<="),
-                PrimV { args: List<Value> -> verifyBinopArgs(args) { a: NumV, b: NumV -> BoolV(a.n <= b.n)} })
+                PrimV { args: List<Value> -> verifyBinopArgs(args, Symbol("<=")) { a: NumV, b: NumV -> BoolV(a.n <= b.n)} })
 
 
 

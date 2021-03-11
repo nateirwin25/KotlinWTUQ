@@ -14,6 +14,7 @@ class tests() {
         testIfC()
         testAppC()
         testLamC()
+        testSymEq()
     }
 
     @Test
@@ -253,6 +254,60 @@ class tests() {
                         )
                 )
 
+        val test6 = (AppC (
+                            LamC(
+                                listOf(Symbol("x"), Symbol("y")),
+                                AppC(
+                                    LamC(
+                                        listOf(Symbol("z")),
+                                        AppC(
+                                            IdC(Symbol("+")),
+                                            listOf(IfC (
+                                                        AppC(IdC(Symbol("<=")), listOf(IdC(Symbol("y")), (NumC(0)))),
+                                                        NumC(3),
+                                                        IdC(Symbol("x"))
+                                                        ),
+                                                    AppC(
+                                                        IdC(Symbol("+")),
+                                                        listOf(IdC(Symbol("y")), IdC(Symbol("z")))
+                                                    )
+                                            )
+                                        )
+                                    ),
+                                    listOf(NumC(3))
+                                )
+                            ),
+                            listOf(NumC(5), (NumC(4)))
+                            )
+                    )
+
+        val test7 = (AppC (
+            LamC(
+                listOf(Symbol("x"), Symbol("y")),
+                AppC(
+                    LamC(
+                        listOf(Symbol("z")),
+                        AppC(
+                            IdC(Symbol("+")),
+                            listOf(IfC (
+                                AppC(IdC(Symbol("<=")), listOf(IdC(Symbol("y")), (NumC(0)))),
+                                NumC(3),
+                                IdC(Symbol("x"))
+                            ),
+                                AppC(
+                                    IdC(Symbol("+")),
+                                    listOf(IdC(Symbol("y")), IdC(Symbol("z")))
+                                )
+                            )
+                        )
+                    ),
+                    listOf(NumC(3))
+                )
+            ),
+            listOf(NumC(5), (NumC(-1)))
+        )
+                )
+
         assertEquals(test1.interp(TopLevelEnvironment.getEnvironment()).serialize(), "#<procedure>")
         assertEquals(test2.interp(TopLevelEnvironment.getEnvironment()).serialize(), "5")
         assertEquals(test3.interp(TopLevelEnvironment.getEnvironment()).serialize(), "9")
@@ -260,6 +315,8 @@ class tests() {
             test4.interp(TopLevelEnvironment.getEnvironment()).serialize()
         }
         assertEquals(test5.interp(TopLevelEnvironment.getEnvironment()).serialize(), "12")
+        assertEquals(test6.interp(TopLevelEnvironment.getEnvironment()).serialize(), "12")
+        assertEquals(test7.interp(TopLevelEnvironment.getEnvironment()).serialize(), "5")
     }
 
     @Test

@@ -261,4 +261,11 @@ class tests() {
         }
         assertEquals(test5.interp(TopLevelEnvironment.getEnvironment()).serialize(), "12")
     }
+
+    @Test
+    fun testSymEq() {
+        val sym1 = Symbol("hello")
+
+        assertEquals(sym1.equals(Symbol("Hello")), false)
+    }
 }

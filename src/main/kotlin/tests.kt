@@ -127,6 +127,19 @@ class tests() {
 
         val test21 = (AppC (StringC("hello"), listOf(NumC(5), NumC(6))))
 
+        val test22 = (AppC (IdC(Symbol("+")), listOf(NumC(5), NumC(6), NumC(7))))
+        val test23 = (AppC (IdC(Symbol("+")), listOf(NumC(5), StringC("hello"))))
+
+        val test24 = (AppC (IdC(Symbol("equal?")), listOf(StringC("hello"), StringC("hello"))))
+        val test25 = (AppC (IdC(Symbol("equal?")), listOf(StringC("hello"), StringC("goodbye"))))
+        val test26 = (AppC (IdC(Symbol("error")), listOf(StringC("test"), StringC("hello"))))
+        val test27 = (AppC (IdC(Symbol("equal?")), listOf(StringC("hello"), StringC("goodbye"), StringC("bye"))))
+
+        val test28 = (AppC (IdC(Symbol("<=")), listOf(NumC(30), NumC(6))))
+        val test29 = (AppC (IdC(Symbol("<=")), listOf(NumC(0), NumC(0))))
+        val test30 = (AppC (IdC(Symbol("<=")), listOf(NumC(-5), NumC(0))))
+        val test31 = (AppC (IdC(Symbol("equal?")), listOf(StringC("hello"), NumC(5))))
+
         assertEquals(test1.interp(TopLevelEnvironment.getEnvironment()).serialize(), "11")
         assertEquals(test2.interp(TopLevelEnvironment.getEnvironment()).serialize(), "6")
         assertEquals(test3.interp(TopLevelEnvironment.getEnvironment()).serialize(), "5")
@@ -154,6 +167,24 @@ class tests() {
         assertThrows(Exception::class.java) {
             test21.interp(TopLevelEnvironment.getEnvironment()).serialize()
         }
+        assertThrows(Exception::class.java) {
+            test22.interp(TopLevelEnvironment.getEnvironment()).serialize()
+        }
+        assertThrows(Exception::class.java) {
+            test23.interp(TopLevelEnvironment.getEnvironment()).serialize()
+        }
+        assertEquals(test24.interp(TopLevelEnvironment.getEnvironment()).serialize(), "true")
+        assertEquals(test25.interp(TopLevelEnvironment.getEnvironment()).serialize(), "false")
+        assertThrows(Exception::class.java) {
+            test26.interp(TopLevelEnvironment.getEnvironment()).serialize()
+        }
+        assertThrows(Exception::class.java) {
+            test27.interp(TopLevelEnvironment.getEnvironment()).serialize()
+        }
+        assertEquals(test28.interp(TopLevelEnvironment.getEnvironment()).serialize(), "false")
+        assertEquals(test29.interp(TopLevelEnvironment.getEnvironment()).serialize(), "true")
+        assertEquals(test30.interp(TopLevelEnvironment.getEnvironment()).serialize(), "true")
+        assertEquals(test31.interp(TopLevelEnvironment.getEnvironment()).serialize(), "false")
     }
 
     @Test
@@ -199,11 +230,35 @@ class tests() {
                         )
                 )
 
+        val test5 = (AppC (
+                            LamC(
+                                listOf(Symbol("x"), Symbol("y")),
+                                AppC(
+                                    LamC(
+                                        listOf(Symbol("z")),
+                                        AppC(
+                                            IdC(Symbol("+")),
+                                            listOf(IdC(Symbol("x")),
+                                                    AppC(
+                                                        IdC(Symbol("+")),
+                                                        listOf(IdC(Symbol("y")), IdC(Symbol("z")))
+                                                    )
+                                                    )
+                                        )
+                                    ),
+                                    listOf(NumC(3))
+                                )
+                            ),
+                            listOf(NumC(5), (NumC(4)))
+                        )
+                )
+
         assertEquals(test1.interp(TopLevelEnvironment.getEnvironment()).serialize(), "#<procedure>")
         assertEquals(test2.interp(TopLevelEnvironment.getEnvironment()).serialize(), "5")
         assertEquals(test3.interp(TopLevelEnvironment.getEnvironment()).serialize(), "9")
         assertThrows(Exception::class.java) {
             test4.interp(TopLevelEnvironment.getEnvironment()).serialize()
         }
+        assertEquals(test5.interp(TopLevelEnvironment.getEnvironment()).serialize(), "12")
     }
 }

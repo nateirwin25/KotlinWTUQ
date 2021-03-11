@@ -11,6 +11,9 @@ class tests() {
         testNumC()
         testStringC()
         testIdC()
+        testIfC()
+        testAppC()
+        testLamC()
     }
 
     @Test
@@ -58,5 +61,149 @@ class tests() {
         assertEquals(test7.interp(TopLevelEnvironment.getEnvironment()).serialize(), "#<primop>")
         assertEquals(test8.interp(TopLevelEnvironment.getEnvironment()).serialize(), "#<primop>")
         assertEquals(test9.interp(TopLevelEnvironment.getEnvironment()).serialize(), "#<primop>")
+    }
+
+    @Test
+    fun testIfC() {
+        val test1 = (IfC (IdC((Symbol("true"))), NumC(4), NumC(3)))
+        val test2 = (IfC (IdC((Symbol("false"))), NumC(4), NumC(3)))
+        val test3 = (IfC (IdC((Symbol("true"))), StringC("yes"), StringC("no")))
+        val test4 = (IfC (IdC((Symbol("false"))), StringC("yes"), StringC("no")))
+        val test5 = (IfC (NumC(6), NumC(4), NumC(3)))
+
+        assertEquals(test1.interp(TopLevelEnvironment.getEnvironment()).serialize(), "4")
+        assertEquals(test2.interp(TopLevelEnvironment.getEnvironment()).serialize(), "3")
+        assertEquals(test3.interp(TopLevelEnvironment.getEnvironment()).serialize(), "yes")
+        assertEquals(test4.interp(TopLevelEnvironment.getEnvironment()).serialize(), "no")
+        assertThrows(Exception::class.java) {
+            test5.interp(TopLevelEnvironment.getEnvironment()).serialize()
+        }
+    }
+
+    @Test
+    fun testAppC() {
+        val test1 = (AppC (IdC(Symbol("+")), listOf(NumC(5), NumC(6))))
+        val test2 = (AppC (IdC(Symbol("+")), listOf(NumC(0), NumC(6))))
+        val test3 = (AppC (IdC(Symbol("+")), listOf(NumC(5), NumC(0))))
+
+        val test4 = (AppC (IdC(Symbol("-")), listOf(NumC(5), NumC(6))))
+        val test5 = (AppC (IdC(Symbol("-")), listOf(NumC(0), NumC(6))))
+        val test6 = (AppC (IdC(Symbol("-")), listOf(NumC(5), NumC(0))))
+
+        val test7 = (AppC (IdC(Symbol("*")), listOf(NumC(5), NumC(6))))
+        val test8 = (AppC (IdC(Symbol("*")), listOf(NumC(0), NumC(6))))
+        val test9 = (AppC (IdC(Symbol("*")), listOf(NumC(5), NumC(0))))
+
+        val test10 = (AppC (IdC(Symbol("/")), listOf(NumC(30), NumC(6))))
+        val test11 = (AppC (IdC(Symbol("/")), listOf(NumC(0), NumC(6))))
+        val test12 = (AppC (IdC(Symbol("/")), listOf(NumC(5), NumC(0))))
+
+        val test13 = (AppC (IdC(Symbol("error")), listOf(StringC("test"))))
+
+        val test14 = (AppC (IdC(Symbol("equal?")), listOf(NumC(5), NumC(0))))
+        val test15 = (AppC (IdC(Symbol("equal?")), listOf(NumC(5), NumC(5))))
+        val test16 = (AppC (IdC(Symbol("equal?")), listOf(IdC(Symbol("true")), IdC(Symbol("true")))))
+        val test17 = (AppC (IdC(Symbol("equal?")), listOf(IdC(Symbol("true")), IdC(Symbol("false")))))
+
+        val test18 = (AppC (IdC(Symbol("+")), listOf(
+            (AppC (IdC(Symbol("+")), listOf(NumC(5), NumC(6)))),
+            (AppC (IdC(Symbol("-")), listOf(NumC(5), NumC(6))))
+        )))
+
+        val test19 =
+            (AppC (IdC(Symbol("*")), listOf(
+            (IfC (
+                (AppC (IdC(Symbol("equal?")), listOf(NumC(5), NumC(5)))),
+                NumC(4), NumC(3))),
+            (AppC (IdC(Symbol("-")), listOf(NumC(5), NumC(6)))))))
+
+        val test20 = (AppC (IdC(Symbol("equal?")), listOf(
+            (IfC (
+                (AppC (IdC(Symbol("equal?")), listOf(NumC(5), NumC(6)))),
+                (IdC(Symbol("true"))),
+                (IdC(Symbol("false")))
+            )),
+            (AppC (IdC(Symbol("equal?")), listOf(IdC(Symbol("true")), IdC(Symbol("true"))))))))
+
+        val test21 = (AppC (StringC("hello"), listOf(NumC(5), NumC(6))))
+
+        assertEquals(test1.interp(TopLevelEnvironment.getEnvironment()).serialize(), "11")
+        assertEquals(test2.interp(TopLevelEnvironment.getEnvironment()).serialize(), "6")
+        assertEquals(test3.interp(TopLevelEnvironment.getEnvironment()).serialize(), "5")
+        assertEquals(test4.interp(TopLevelEnvironment.getEnvironment()).serialize(), "-1")
+        assertEquals(test5.interp(TopLevelEnvironment.getEnvironment()).serialize(), "-6")
+        assertEquals(test6.interp(TopLevelEnvironment.getEnvironment()).serialize(), "5")
+        assertEquals(test7.interp(TopLevelEnvironment.getEnvironment()).serialize(), "30")
+        assertEquals(test8.interp(TopLevelEnvironment.getEnvironment()).serialize(), "0")
+        assertEquals(test9.interp(TopLevelEnvironment.getEnvironment()).serialize(), "0")
+        assertEquals(test10.interp(TopLevelEnvironment.getEnvironment()).serialize(), "5")
+        assertEquals(test11.interp(TopLevelEnvironment.getEnvironment()).serialize(), "0")
+        assertThrows(Exception::class.java) {
+            test12.interp(TopLevelEnvironment.getEnvironment()).serialize()
+        }
+        assertThrows(Exception::class.java) {
+            test13.interp(TopLevelEnvironment.getEnvironment()).serialize()
+        }
+        assertEquals(test14.interp(TopLevelEnvironment.getEnvironment()).serialize(), "false")
+        assertEquals(test15.interp(TopLevelEnvironment.getEnvironment()).serialize(), "true")
+        assertEquals(test16.interp(TopLevelEnvironment.getEnvironment()).serialize(), "true")
+        assertEquals(test17.interp(TopLevelEnvironment.getEnvironment()).serialize(), "false")
+        assertEquals(test18.interp(TopLevelEnvironment.getEnvironment()).serialize(), "10")
+        assertEquals(test19.interp(TopLevelEnvironment.getEnvironment()).serialize(), "-4")
+        assertEquals(test20.interp(TopLevelEnvironment.getEnvironment()).serialize(), "false")
+        assertThrows(Exception::class.java) {
+            test21.interp(TopLevelEnvironment.getEnvironment()).serialize()
+        }
+    }
+
+    @Test
+    fun testLamC() {
+        val test1 = (LamC(
+                            listOf(Symbol("x"), Symbol("y")),
+                            IfC (
+                                (AppC (IdC(Symbol("equal?")), listOf(NumC(5), NumC(6)))),
+                                (IdC(Symbol("true"))),
+                                (IdC(Symbol("false")))
+                            )
+                        ))
+
+        val test2 = (AppC (
+                            LamC(
+                                listOf(Symbol("x")),
+                                AppC(
+                                    LamC(
+                                        listOf(Symbol("y")),
+                                        AppC(IdC(Symbol("+")), listOf(IdC(Symbol("x")), IdC(Symbol("y"))))
+                                    ),
+                                    listOf(NumC(3))
+                                )),
+                            listOf(NumC(2))
+                          )
+                    )
+
+        val test3 = (AppC (
+                            LamC(
+                                listOf(Symbol("x"), Symbol("y")),
+                                AppC(IdC(Symbol("+")), listOf(IdC(Symbol("x")), IdC(Symbol("y"))))
+                            ),
+                            listOf(NumC(5), (NumC(4)))
+                          )
+                    )
+
+        val test4 = (AppC (
+                            LamC(
+                                listOf(Symbol("x"), Symbol("y")),
+                                AppC(IdC(Symbol("+")), listOf(IdC(Symbol("x")), IdC(Symbol("k"))))
+                            ),
+                            listOf(NumC(5), (NumC(4)))
+                        )
+                )
+
+        assertEquals(test1.interp(TopLevelEnvironment.getEnvironment()).serialize(), "#<procedure>")
+        assertEquals(test2.interp(TopLevelEnvironment.getEnvironment()).serialize(), "5")
+        assertEquals(test3.interp(TopLevelEnvironment.getEnvironment()).serialize(), "9")
+        assertThrows(Exception::class.java) {
+            test4.interp(TopLevelEnvironment.getEnvironment()).serialize()
+        }
     }
 }

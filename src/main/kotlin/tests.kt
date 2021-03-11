@@ -191,97 +191,48 @@ class tests() {
     @Test
     fun testLamC() {
         val test1 = (LamC(
-                            listOf(Symbol("x"), Symbol("y")),
-                            IfC (
-                                (AppC (IdC(Symbol("equal?")), listOf(NumC(5), NumC(6)))),
-                                (IdC(Symbol("true"))),
-                                (IdC(Symbol("false")))
-                            )
-                        ))
+            listOf(Symbol("x"), Symbol("y")),
+            IfC(
+                (AppC(IdC(Symbol("equal?")), listOf(NumC(5), NumC(6)))),
+                (IdC(Symbol("true"))),
+                (IdC(Symbol("false")))
+            )
+        ))
 
-        val test2 = (AppC (
-                            LamC(
-                                listOf(Symbol("x")),
-                                AppC(
-                                    LamC(
-                                        listOf(Symbol("y")),
-                                        AppC(IdC(Symbol("+")), listOf(IdC(Symbol("x")), IdC(Symbol("y"))))
-                                    ),
-                                    listOf(NumC(3))
-                                )),
-                            listOf(NumC(2))
-                          )
-                    )
-
-        val test3 = (AppC (
-                            LamC(
-                                listOf(Symbol("x"), Symbol("y")),
-                                AppC(IdC(Symbol("+")), listOf(IdC(Symbol("x")), IdC(Symbol("y"))))
-                            ),
-                            listOf(NumC(5), (NumC(4)))
-                          )
-                    )
-
-        val test4 = (AppC (
-                            LamC(
-                                listOf(Symbol("x"), Symbol("y")),
-                                AppC(IdC(Symbol("+")), listOf(IdC(Symbol("x")), IdC(Symbol("k"))))
-                            ),
-                            listOf(NumC(5), (NumC(4)))
-                        )
+        val test2 = (AppC(
+            LamC(
+                listOf(Symbol("x")),
+                AppC(
+                    LamC(
+                        listOf(Symbol("y")),
+                        AppC(IdC(Symbol("+")), listOf(IdC(Symbol("x")), IdC(Symbol("y"))))
+                    ),
+                    listOf(NumC(3))
+                )
+            ),
+            listOf(NumC(2))
+        )
                 )
 
-        val test5 = (AppC (
-                            LamC(
-                                listOf(Symbol("x"), Symbol("y")),
-                                AppC(
-                                    LamC(
-                                        listOf(Symbol("z")),
-                                        AppC(
-                                            IdC(Symbol("+")),
-                                            listOf(IdC(Symbol("x")),
-                                                    AppC(
-                                                        IdC(Symbol("+")),
-                                                        listOf(IdC(Symbol("y")), IdC(Symbol("z")))
-                                                    )
-                                                    )
-                                        )
-                                    ),
-                                    listOf(NumC(3))
-                                )
-                            ),
-                            listOf(NumC(5), (NumC(4)))
-                        )
+        val test3 = (AppC(
+            LamC(
+                listOf(Symbol("x"), Symbol("y")),
+                AppC(IdC(Symbol("+")), listOf(IdC(Symbol("x")), IdC(Symbol("y"))))
+            ),
+            listOf(NumC(5), (NumC(4)))
+        )
                 )
 
-        val test6 = (AppC (
-                            LamC(
-                                listOf(Symbol("x"), Symbol("y")),
-                                AppC(
-                                    LamC(
-                                        listOf(Symbol("z")),
-                                        AppC(
-                                            IdC(Symbol("+")),
-                                            listOf(IfC (
-                                                        AppC(IdC(Symbol("<=")), listOf(IdC(Symbol("y")), (NumC(0)))),
-                                                        NumC(3),
-                                                        IdC(Symbol("x"))
-                                                        ),
-                                                    AppC(
-                                                        IdC(Symbol("+")),
-                                                        listOf(IdC(Symbol("y")), IdC(Symbol("z")))
-                                                    )
-                                            )
-                                        )
-                                    ),
-                                    listOf(NumC(3))
-                                )
-                            ),
-                            listOf(NumC(5), (NumC(4)))
-                            )
-                    )
+        val test4 = (AppC(
+            LamC(
+                listOf(Symbol("x"), Symbol("y")),
+                AppC(IdC(Symbol("+")), listOf(IdC(Symbol("x")), IdC(Symbol("k"))))
+            ),
+            listOf(NumC(5), (NumC(4)))
+        )
+                )
 
-        val test7 = (AppC (
+        val test5 = (AppC(
             LamC(
                 listOf(Symbol("x"), Symbol("y")),
                 AppC(
@@ -289,11 +240,8 @@ class tests() {
                         listOf(Symbol("z")),
                         AppC(
                             IdC(Symbol("+")),
-                            listOf(IfC (
-                                AppC(IdC(Symbol("<=")), listOf(IdC(Symbol("y")), (NumC(0)))),
-                                NumC(3),
-                                IdC(Symbol("x"))
-                            ),
+                            listOf(
+                                IdC(Symbol("x")),
                                 AppC(
                                     IdC(Symbol("+")),
                                     listOf(IdC(Symbol("y")), IdC(Symbol("z")))
@@ -304,9 +252,67 @@ class tests() {
                     listOf(NumC(3))
                 )
             ),
-            listOf(NumC(5), (NumC(-1)))
+            listOf(NumC(5), (NumC(4)))
         )
                 )
+
+        val test6 = (AppC(
+            LamC(
+                listOf(Symbol("x"), Symbol("y")),
+                AppC(
+                    LamC(
+                        listOf(Symbol("z")),
+                        AppC(
+                            IdC(Symbol("+")),
+                            listOf(
+                                IfC(
+                                    AppC(IdC(Symbol("<=")), listOf(IdC(Symbol("y")), (NumC(0)))),
+                                    NumC(3),
+                                    IdC(Symbol("x"))
+                                ),
+                                AppC(
+                                    IdC(Symbol("+")),
+                                    listOf(IdC(Symbol("y")), IdC(Symbol("z")))
+                                )
+                            )
+                        )
+                    ),
+                    listOf(NumC(3))
+                )
+            ),
+            listOf(NumC(5), (NumC(4)))
+        )
+                )
+
+        // like (top-interp '{{lam {x y} {
+        //                          {lam {z} {+ {if {<= y 0} 3 x} {+ y z}}} 3}} 5 -1})
+
+        val test7 = AppC (
+                        LamC(
+                            listOf(Symbol("x"), Symbol("y")),
+                            AppC(
+                                LamC(
+                                    listOf(Symbol("z")),
+                                    AppC(
+                                        IdC(Symbol("+")),
+                                        listOf(IfC (
+                                            AppC(IdC(Symbol("<=")), listOf(IdC(Symbol("y")), (NumC(0)))),
+                                            NumC(3),
+                                            IdC(Symbol("x"))
+                                        ),
+                                            AppC(
+                                                IdC(Symbol("+")),
+                                                listOf(IdC(Symbol("y")), IdC(Symbol("z")))
+                                            )
+                                        )
+                                    )
+                                ),
+                                listOf(NumC(3))
+                            )
+                        ),
+                        listOf(NumC(5), (NumC(-1)))
+                    )
+
 
         assertEquals(test1.interp(TopLevelEnvironment.getEnvironment()).serialize(), "#<procedure>")
         assertEquals(test2.interp(TopLevelEnvironment.getEnvironment()).serialize(), "5")

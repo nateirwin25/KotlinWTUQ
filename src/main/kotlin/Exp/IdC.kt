@@ -10,3 +10,4 @@ class IdC(var id: Symbol) : ExprC() {
     }
 
 }
+
